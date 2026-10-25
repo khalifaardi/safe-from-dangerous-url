@@ -1,81 +1,75 @@
 # CekDulu
 
-Lihat link sebelum kamu klik. Extension ringan untuk Chrome/Edge — cek URL yang muncul
-di halaman, kasih verdict sebelum kamu masuk.
+Cek link sebelum kamu klik. Arahkan kursor ke sebuah tautan, dan sebelum kamu sempat
+menekannya, CekDulu sudah bilang link itu mencurigakan atau tidak — beserta alasannya.
 
-**~30 KB JavaScript. Tanpa analytics. Tanpa akun. Tanpa server, kecuali kamu isi sendiri.**
+Ekstensi Chrome/Edge, ~30 KB JavaScript. Tanpa analytics, tanpa akun, tanpa server —
+kecuali kamu pasang sendiri.
 
-Open source di bawah Apache-2.0 — silakan fork, audit, dan kirim PR. Lihat [CONTRIBUTING.md](CONTRIBUTING.md).
+Open source di bawah Apache-2.0: silakan fork, audit, dan kirim PR. Aturan mainnya ada di
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
----
+## Coba dulu, tanpa memasang apa pun
 
-## Lihat UI-nya dulu (tanpa install)
+`demo/cekdulu-walkthrough.mp4` — rekaman 11 detik ekstensi yang benar-benar jalan di
+Chrome, bukan mock-up: kursor berhenti → klik → kartu blokir → kembali → link pendek.
 
-**`demo/cekdulu-walkthrough.mp4`** — rekaman 11 detik dari extension yang benar-benar
-jalan di Chrome (bukan mock-up): hover → klik → kartu blokir → kembali → link pendek.
+`demo/cekdulu-ui-flow.png` menampilkan empat keadaan, diambil dari kode yang berjalan di
+Chrome.
 
+Atau coba langsung: buka `demo/f1-whatsapp.html` di browser, lalu arahkan kursor ke link
+di dalam bubble chat. Halaman demo itu memuat `engine.js` dan `content.js` yang sama,
+jadi perilakunya identik dengan ekstensinya.
 
-Buka `demo/cekdulu-ui-flow.png` — empat keadaan, diambil dari kode yang benar-benar
-berjalan di Chrome, bukan mock-up.
-
-Atau coba langsung: buka `demo/f1-whatsapp.html` di browser, lalu arahkan kursor ke
-link di dalam bubble chat. Halaman demo itu memuat `engine.js` + `content.js` yang sama,
-jadi perilakunya identik dengan extension-nya.
-
----
-
-## Install (2 menit)
+## Pasang (2 menit)
 
 1. Buka `chrome://extensions`
 2. Nyalakan **Developer mode** (kanan atas)
-3. Klik **Load unpacked** → pilih folder `cekdulu/`
+3. Klik **Load unpacked**, pilih folder `cekdulu/`
 4. Buka halaman apa pun, arahkan kursor ke sebuah link
 
-Edge: `edge://extensions`, langkahnya sama.
+Di Edge: `edge://extensions`, langkahnya sama.
 
----
+## Cara kerjanya
 
-## Yang dia lakukan
+**Kursor berhenti di link.** Muncul label kecil berisi penilaian dan alasannya. Tidak ada
+yang diklik, tidak ada yang dibuka.
 
-**Hover** — arahkan kursor ke link, muncul pill kecil berisi verdict + alasan.
-Tidak ada yang diklik, tidak ada yang dibuka.
+**Kamu mengklik.** Kalau skornya tinggi, klik ditahan dan muncul kartu penjelasan. Tombol
+"Tetap buka" selalu ada — ini alat bantu, bukan sensor.
 
-**Klik** — kalau skornya tinggi, klik ditahan dan muncul kartu penjelasan.
-Tombol "Tetap buka" selalu ada; ini alat bantu, bukan sensor.
+**Kamu menempel link.** Klik ikon ekstensi, tempel URL yang kamu terima di WhatsApp atau
+SMS.
 
-**Tempel link** — klik ikon extension, tempel URL yang kamu terima di WhatsApp/SMS.
+**Kamu mendarat di halaman berisiko.** Muncul pita peringatan di atas halaman. Tidak
+memblokir, karena positif palsu itu memang terjadi.
 
-**Halaman berbahaya** — kalau kamu mendarat di halaman yang skornya tinggi, muncul
-banner di atas (tidak memblokir, karena false positive itu nyata).
+## Tiga keputusan desain
 
----
+### 1. CekDulu tidak pernah membuka URL yang dicek
 
-## Tiga keputusan desain yang penting
+Alur awalnya salah: baca URL, lalu buka URL-nya untuk diperiksa. Membuka link justru
+berbahaya dan tidak perlu.
 
-### 1. CekDulu **tidak pernah membuka** URL yang dicek
-
-Ini koreksi dari alur awal "baca URL → akses URL-nya". Membuka link untuk memeriksanya
-justru berbahaya dan tidak perlu:
-
-- **Berbahaya.** URL malware ya isinya malware. Membukanya dari browser kamu adalah persis
+- **Berbahaya.** URL malware isinya malware. Membukanya dari browser kamu adalah persis
   yang diinginkan penyerang (drive-by download, exploit kit).
-- **Membakar link.** Banyak link phishing sekali pakai, terikat IP, atau terikat user-agent.
-  Kalau kamu buka duluan, penyerang tahu ada target hidup di IP itu, dan link-nya mati
-  sebelum korban asli klik.
-- **Bocor.** Permintaan itu membawa IP kamu.
-- **Lambat.** Satu halaman punya 50–300 link. 300 fetch = halaman macet.
+- **Membakar link.** Banyak link phishing sekali pakai, terikat IP atau user-agent. Kalau
+  kamu buka duluan, penyerang tahu ada target hidup di IP itu, dan link-nya mati sebelum
+  korban asli sempat klik.
+- **Membocorkan identitas.** Permintaan itu membawa IP kamu.
+- **Lambat.** Satu halaman punya 50–300 link. 300 fetch berarti halaman macet.
 
-Menilai link cukup dari **bentuknya** + **reputasinya**. Tidak perlu masuk ke dalamnya.
+Menilai link cukup dari bentuknya dan reputasinya. Tidak perlu masuk ke dalamnya.
 
-### 2. Nol kerja sampai kamu menunjukkan niat
+### 2. Tidak ada kerja sampai kamu menunjukkan niat
 
-Tidak ada `MutationObserver` yang jalan terus, tidak ada scan seluruh DOM saat load.
-Kerja dimulai saat `mouseover` sebuah `<a>`, dengan debounce 110 ms. Itu sebabnya
-footprint-nya ~30 KB dan halaman tidak melambat.
+Tidak ada `MutationObserver` yang jalan terus, tidak ada pemindaian seluruh DOM saat
+halaman dimuat. Kerja baru dimulai saat `mouseover` sebuah `<a>`, dengan debounce 110 ms.
+Itu sebabnya jejaknya cuma ~30 KB dan halaman tidak melambat.
 
-### 3. Anggaran waktu yang keras: 140 ms
+### 3. Batas keras 140 ms
 
-Klik tidak boleh terasa rusak. Jadi:
+Klik yang tertahan lama terasa seperti browser rusak. Jadi:
 
 ```
 klik → cek lokal (0 ms)
@@ -83,45 +77,41 @@ klik → cek lokal (0 ms)
      → belum?               → tahan maksimal 140 ms, lalu lanjut apa pun hasilnya
 ```
 
-Kalau jawaban database datang terlambat, klik tetap jalan. Kecepatan menang atas
-kelengkapan — alat yang bikin lambat akan di-uninstall.
+Kalau jawaban database datang terlambat, klik tetap jalan. Kecepatan didahulukan di atas
+kelengkapan, karena alat yang bikin lambat akan dicopot orang.
 
-**Tanpa proxy, extension ini tidak menyentuh klik sama sekali.** Link aman langsung jalan
+**Tanpa proxy, ekstensi ini tidak menyentuh klik sama sekali.** Link aman langsung jalan
 seperti biasa.
 
----
+## Yang kamu lihat: penilaian, bukan jaminan
 
-## Verdict, bukan jaminan
-
-| Band | Yang dilihat pengguna | Yang dilakukan |
+| Tingkat | Yang kamu lihat | Yang terjadi |
 |---|---|---|
 | `ok` | "Tidak ada sinyal bahaya" | Diam saja |
-| `warn` | "Mencurigakan" | Pill kuning saat hover |
-| `danger` | "Berbahaya" | Tahan klik + kartu penjelasan |
+| `warn` | "Mencurigakan" | Label kuning saat kursor berhenti |
+| `danger` | "Berbahaya" | Klik ditahan + kartu penjelasan |
 
-Skor angka (0–100) tetap dihitung di dalam, tapi **tidak pernah ditampilkan**. Pengguna
-melihat penilaian dan alasannya, bukan angka yang tidak bisa ia tafsirkan.
+Skor angka (0–100) tetap dihitung di dalam, tapi tidak pernah ditampilkan. Kamu melihat
+penilaian dan alasannya, bukan angka yang tidak bisa kamu tafsirkan.
 
-Skor 0 **bukan** berarti aman. Berarti "tidak ada yang saya kenali". Ini tertulis di UI-nya,
+Skor 0 **bukan** berarti aman. Artinya "tidak ada yang saya kenali". Ini tertulis di UI-nya,
 bukan cuma di README.
 
 ### Sinyal yang dipakai (semua lokal)
 
 - Host berupa IP literal, bukan nama domain
-- Punycode / karakter non-Latin (`xn--…`) — trik paling umum menyamar
+- Punycode / karakter non-Latin (`xn--…`) — trik paling umum untuk menyamar
 - **Typosquatting** terhadap ~45 brand Indonesia (DANA, BCA, Shopee, JNE, WhatsApp, …)
-- Nama brand di hostname/path padahal domainnya bukan milik brand itu
+- Nama brand di hostname atau path, padahal domainnya bukan milik brand itu
 - Hosting gratis (`.my.id`, `.biz.id`, `.web.id`, `.s.id`, Vercel, Netlify, …)
 - TLD berisiko (`.xyz`, `.top`, `.icu`, `.zip`, …)
 - `user@` di dalam URL, port aneh, subdomain bertingkat, nama domain acak
 - Link menuju file yang bisa dijalankan (`.apk`, `.exe`, …)
 - Link diperpendek (ditandai, bukan dihukum)
 
----
-
 ## Lapisan database (opsional)
 
-Tanpa ini extension **hanya** jalan lokal. Kalau mau lapisan reputasi:
+Tanpa lapisan ini, ekstensi hanya jalan lokal. Kalau mau menambah reputasi:
 
 ```bash
 cd worker
@@ -129,65 +119,68 @@ npx wrangler secret put SB_KEY     # API key Google Safe Browsing
 npx wrangler deploy
 ```
 
-Lalu tempel URL Worker-nya di **Pengaturan**. Yang dikirim hanya hostname yang belum ada
-di cache; hasil disimpan 6 jam.
+Lalu tempel URL Worker-nya di **Pengaturan**. Yang dikirim hanya hostname yang belum ada di
+cache; hasilnya disimpan 6 jam.
 
-Kenapa butuh proxy: API key di dalam bundle extension itu publik — siapa pun bisa
-mengekstrak dan menghabiskannya. Worker menyimpannya di server.
+Kenapa harus lewat proxy: API key di dalam bundle ekstensi itu publik, siapa pun bisa
+mengekstraknya dan menghabiskannya. Worker menyimpannya di server.
 
-**Catatan penting:**
-- Google Safe Browsing **gratis hanya untuk non-komersial**. Project ini non-komersial,
-  jadi aman. Kalau nanti dijual, harus pindah ke Web Risk ($0.50/1.000 lookup setelah
-  100.000 gratis/bulan).
-- API v4 **berhenti didukung 31 Maret 2027**. Sebelum itu port `lookup()` ke v5 `urls.search`.
+Yang perlu kamu tahu:
+
+- Dua endpoint v5 itu beda tugas, jangan tertukar. `urls:search` menggantikan
+  `threatMatches:find` (kirim URL, terima penilaian), sedangkan `hashes:search` menggantikan
+  `fullHashes.find` (kirim prefix hash). Proyek ini sekarang memakai jalur pertama; jalur
+  kedua ada di daftar berikutnya karena lebih privat.
+
+- Google Safe Browsing gratis hanya untuk non-komersial. Proyek ini non-komersial, jadi
+  masih masuk. Kalau nanti dijual, harus pindah ke Web Risk ($0.50/1.000 lookup setelah
+  100.000 gratis per bulan).
+- `worker/worker.js` masih memanggil `v4/threatMatches:find`, dan v4 berhenti 31 Maret
+  2027. Pengganti langsungnya `v5/urls:search`: tetap mengirim URL polos, maksimal 50 per
+  request, dan balasannya membawa `cacheDuration` yang wajib dipakai.
 - URL Worker kamu itu seperti password — aktifkan rate limiting di Cloudflare.
 
----
-
-## Batas yang perlu kamu tahu (jujur)
+## Yang belum bisa dilakukannya
 
 - **Hanya link `<a>`.** Tidak menangkap `window.open()` dari JavaScript, submit form,
-  tombol SPA, atau link di dalam gambar/screenshot.
-- **Hanya browser.** Link di WhatsApp tetap tidak terjangkau — itu butuh
+  tombol SPA, atau link di dalam gambar dan screenshot.
+- **Hanya di browser.** Link di WhatsApp tetap tidak terjangkau. Itu butuh
   `AccessibilityService` di Android, yang diblokir Google sejak Android 17.
 - **Bukan pengganti Chrome Safe Browsing.** Chrome sudah punya database yang jauh lebih
   besar. Nilai tambah di sini: alasan yang bisa dibaca manusia, deteksi typosquat brand
   Indonesia, dan peringatan sebelum klik — bukan sesudah halaman terbuka.
-- **False positive itu nyata.** "Tetap buka" selalu tersedia. Jangan pernah jadikan ini
+- **Positif palsu itu nyata.** "Tetap buka" selalu tersedia. Jangan jadikan ini
   satu-satunya lapisan keamanan.
 
----
-
-## Struktur
+## Isi folder
 
 ```
 cekdulu/
 ├── manifest.json          MV3
 ├── src/engine.js          semua logika penilaian, nol network
-├── src/content.js         hover pill, click guard, banner
+├── src/content.js         label saat kursor berhenti, penahan klik, pita peringatan
 ├── src/background.js      cache 6 jam + panggilan proxy opsional
-├── popup.html/js          tempel-link checker
+├── popup.html/js          pemeriksa link tempel
 ├── options.html/js        pengaturan proxy
-├── worker/worker.js       Cloudflare Worker (Safe Browsing proxy)
+├── worker/worker.js       Cloudflare Worker (proxy Safe Browsing)
 └── icons/
 ```
 
-## Langkah berikutnya (belum dikerjakan)
+## Yang belum dikerjakan
 
-- [ ] Auto-scan link yang terlihat, pakai `IntersectionObserver` + batas 20 link
-- [ ] Migrasi ke Safe Browsing v5 `hashes.search` — URL tidak dikirim dalam bentuk polos
-- [ ] Whitelist domain yang kamu percaya
-- [ ] Terjemahan Inggris
-- [ ] Publish ke Chrome Web Store + Firefox AMO (butuh review `<all_urls>`)
+- [ ] Pindai otomatis link yang terlihat, pakai `IntersectionObserver` dengan batas 20 link
+- [ ] Pindah ke v5 `hashes.search` — hash URL di lokal, yang dikirim cuma prefix 4 byte,
+      jadi URL tidak pernah dikirim polos
+- [ ] Daftar domain yang kamu percayai
+- [ ] Terjemahan bahasa Inggris
+- [ ] Rilis ke Chrome Web Store dan Firefox AMO (butuh review `<all_urls>`)
 
----
-
-## Tes
+## Uji
 
 ```bash
 npm install
 npm test        # 12 tes perilaku di jsdom
-npm run check   # syntax check semua file
+npm run check   # cek sintaks semua file
 ```
 
 Tes menguji **kontrak perilaku**, bukan "apakah tampilannya muncul":
@@ -196,31 +189,31 @@ Tes menguji **kontrak perilaku**, bukan "apakah tampilannya muncul":
 2. link yang diketahui berbahaya harus ditahan dan kartunya muncul
 3. link tak dikenal harus tetap lanjut setelah batas waktu habis
 
-## Kontribusi
+## Ikut menyumbang
 
-Kontribusi paling berguna tidak butuh coding: **menambah brand Indonesia** dan **mengirim
-contoh URL untuk set uji berlabel**. Detailnya di [CONTRIBUTING.md](CONTRIBUTING.md).
+Sumbangan paling berguna tidak perlu menulis kode: **menambah brand Indonesia** dan
+**mengirim contoh URL untuk set uji berlabel**. Detailnya di [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Ada empat aturan yang tidak bisa ditawar: jangan pernah membuka URL yang dinilai, jangan
-menambah telemetri, jangan menampilkan kata "aman", jangan menaruh rahasia di bundle.
+Empat hal yang tidak boleh dilanggar: jangan pernah membuka URL yang dinilai, jangan
+menambah telemetri, jangan menampilkan kata "aman", jangan menaruh rahasia di dalam bundle.
 
-## Keamanan
+## Melaporkan celah
 
-Jangan laporkan celah lewat issue publik — pakai
+Jangan laporkan lewat issue publik. Pakai
 [Security Advisories](https://github.com/khalifaardi/safe-from-dangerous-url/security/advisories/new).
-Lihat [SECURITY.md](SECURITY.md) untuk cakupannya.
+Cakupannya ada di [SECURITY.md](SECURITY.md).
 
-## Build resmi
+## Rilis resmi
 
-Ini project keamanan, jadi fork adalah risiko: siapa pun bisa mengambil kode ini, menambah
-keylogger, dan menerbitkannya dengan nama mirip.
+Ini proyek keamanan, jadi fork memang berisiko: siapa pun bisa mengambil kode ini, menambah
+keylogger, lalu menerbitkannya dengan nama yang mirip.
 
-- Build resmi hanya dari repo ini, atau dari Chrome Web Store / Firefox AMO yang ditautkan
-  di halaman Releases.
-- Nama **CekDulu** dan ikonnya tidak termasuk dalam lisensi (Apache-2.0 pasal 6). Fork boleh
+- Rilis resmi hanya dari repo ini, atau dari Chrome Web Store / Firefox AMO yang tertaut di
+  halaman Releases.
+- Nama **CekDulu** dan ikonnya di luar cakupan lisensi (Apache-2.0 pasal 6). Fork boleh
   memakai kodenya, tapi harus memakai nama lain.
-- Sebelum memasang build dari mana pun: buka `chrome://extensions`, cek jumlah file dan
-  izin yang diminta. Extension ini hanya butuh `storage` dan host access.
+- Sebelum memasang rilis dari sumber mana pun: buka `chrome://extensions`, cek jumlah file
+  dan izin yang diminta. Ekstensi ini hanya meminta `storage` dan host access.
 
 ## Lisensi
 
