@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Laporan kerentanan (privat)
-    url: https://github.com/khalifaardi/cekdulu/security/advisories/new
+    url: https://github.com/khalifaardi/safe-from-dangerous-url/security/advisories/new
     about: Jangan laporkan celah keamanan lewat issue publik.
   - name: Diskusi & pertanyaan
-    url: https://github.com/khalifaardi/cekdulu/discussions
+    url: https://github.com/khalifaardi/safe-from-dangerous-url/discussions
     about: Untuk pertanyaan umum, ide, atau bantuan pakai Discussions.

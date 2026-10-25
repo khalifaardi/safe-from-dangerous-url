@@ -41,7 +41,7 @@ Sertakan URL-nya dan alasan yang muncul di pill.
 ## Menyiapkan environment
 
 ```bash
-git clone https://github.com/khalifaardi/cekdulu.git
+git clone https://github.com/khalifaardi/safe-from-dangerous-url.git
 cd cekdulu
 npm install
 npm test          # 12 tes, harus lulus semua

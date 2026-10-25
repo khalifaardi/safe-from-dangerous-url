@@ -207,7 +207,7 @@ menambah telemetri, jangan menampilkan kata "aman", jangan menaruh rahasia di bu
 ## Keamanan
 
 Jangan laporkan celah lewat issue publik — pakai
-[Security Advisories](https://github.com/khalifaardi/cekdulu/security/advisories/new).
+[Security Advisories](https://github.com/khalifaardi/safe-from-dangerous-url/security/advisories/new).
 Lihat [SECURITY.md](SECURITY.md) untuk cakupannya.
 
 ## Build resmi

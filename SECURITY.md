@@ -8,7 +8,7 @@ kerentanan diperlakukan serius.
 
 **Jangan buka issue publik.** Gunakan GitHub Security Advisories:
 
-> https://github.com/khalifaardi/cekdulu/security/advisories/new
+> https://github.com/khalifaardi/safe-from-dangerous-url/security/advisories/new
 
 Kalau itu tidak bisa diakses, kirim email ke alamat di profil GitHub pemilik repo.
 
