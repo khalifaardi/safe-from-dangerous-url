@@ -1,0 +1,44 @@
+name: Accuracy report
+description: A safe site is flagged, or a scam is being missed
+labels: [accuracy]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        False positive (situs sah dianggap berbahaya) lebih merusak daripada false negative:
+        orang akan uninstall. Laporkan keduanya.
+
+        **Sensor dulu data pribadinya** — nomor telepon, nama, nomor rekening.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Jenis
+      options:
+        - False positive — situs sah diberi label berbahaya/mencurigakan
+        - False negative — penipuan lolos dengan label aman
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: Sensor bagian yang mengandung data pribadi.
+      placeholder: "https://contoh.my.id/path"
+    validations:
+      required: true
+
+  - type: textarea
+    id: verdict
+    attributes:
+      label: Apa yang ditampilkan CekDulu
+      description: Salin teks di pill/kartu, termasuk alasannya.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Kenapa menurutmu salah
+      description: Untuk false negative, jelaskan ciri apa yang seharusnya tertangkap.

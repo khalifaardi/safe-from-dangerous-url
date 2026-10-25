@@ -1,0 +1,8 @@
+node_modules/
+demo/frames/
+demo/rec/
+*.zip
+.DS_Store
+.env
+__pycache__/
+*.pyc

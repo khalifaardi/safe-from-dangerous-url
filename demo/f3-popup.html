@@ -1,0 +1,47 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>CekDulu</title>
+
+<script>
+  window.chrome = {
+    storage: { local: { get: (k, cb) => cb && cb({}), set: () => {} },
+               session: { get: async () => ({}), set: async () => {}, remove: async () => {} } },
+    runtime: { sendMessage: (m, cb) => cb && cb({ ok: true, results: {} }) }
+  };
+  window.CHROME_STUB = true;
+</script>
+
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; width:340px; background:#16171a; color:#e9eaee;
+         font:13px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; padding:14px; }
+  h1 { font-size:14px; margin:0 0 2px; }
+  .tag { color:#9aa0aa; font-size:11px; margin-bottom:12px; }
+  input { width:100%; box-sizing:border-box; padding:9px 10px; border-radius:8px;
+          border:1px solid #2e3138; background:#0f1012; color:#eceef2; font:inherit; }
+  button { margin-top:8px; width:100%; padding:9px; border-radius:8px; cursor:pointer;
+           border:1px solid #2e3138; background:#22252a; color:#e9eaee; font:inherit; font-weight:600; }
+  #out { margin-top:12px; }
+  .card { border-radius:9px; padding:10px 11px; margin-bottom:9px; }
+  .card.ok { background:#10291d; border:1px solid #1c4a33; }
+  .card.warn { background:#2c2109; border:1px solid #5a4210; }
+  .card.danger { background:#2d1010; border:1px solid #5e1c1c; }
+  .card .h { font-weight:700; margin-bottom:4px; }
+  .card .s { font-family:ui-monospace,Menlo,monospace; font-size:11px; opacity:.75;
+             word-break:break-all; margin-bottom:6px; }
+  ul { margin:0; padding-left:16px; } li { margin-bottom:3px; }
+  .empty { color:#7f858f; font-size:12px; }
+  .foot { margin-top:12px; font-size:11px; color:#7f858f; display:flex; justify-content:space-between; }
+  a { color:#6ea0f0; text-decoration:none; }
+</style></head><body>
+  <h1>CekDulu</h1>
+  <div class="tag">Tempel link yang kamu terima, sebelum diklik.</div>
+  <input id="url" type="text" value="https://dana-klaim-hadiah.xyz/verifikasi" autocomplete="off" spellcheck="false">
+  <button id="check">Cek link</button>
+  <div id="out"></div>
+  <div class="foot"><span id="mode">lokal saja</span><a href="#">Pengaturan</a></div>
+  <script src="../src/engine.js"></script>
+  <script src="../popup.js"></script>
+  <script>
+    // demo: auto-run the check so the screenshot shows a result
+    window.addEventListener('load', () => setTimeout(() => document.getElementById('check').click(), 120));
+  </script>
+</body></html>

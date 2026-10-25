@@ -1,0 +1,53 @@
+name: Bug report
+description: Something is broken, or a safe site is being flagged
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Jangan laporkan kerentanan keamanan di sini — pakai
+        [Security Advisories](../security/advisories/new).
+
+  - type: textarea
+    id: what
+    attributes:
+      label: Apa yang terjadi
+      description: Sertakan URL atau langkah yang memicunya.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Yang seharusnya terjadi
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Edge
+        - Brave
+        - Firefox
+        - Lainnya
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versi CekDulu
+      placeholder: "0.1.0 (lihat di chrome://extensions)"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Sebelum mengirim
+      options:
+        - label: Saya sudah coba dengan extension lain dimatikan
+        - label: Ini bukan false positive pada situs sah (kalau iya, pakai template Accuracy)

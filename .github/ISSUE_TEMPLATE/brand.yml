@@ -1,0 +1,34 @@
+name: Brand list addition
+description: Add an Indonesian brand and its official domain
+labels: [brands, good first issue]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ini kontribusi paling berguna dan tidak butuh coding. Daftar brand ada di
+        `src/engine.js` pada array `BRANDS`.
+
+  - type: input
+    id: brand
+    attributes:
+      label: Nama brand (huruf kecil)
+      placeholder: "bprks"
+    validations:
+      required: true
+
+  - type: input
+    id: domain
+    attributes:
+      label: Domain resmi
+      description: Hanya domain yang benar-benar milik brand ini. Bukan halaman promo, bukan link afiliasi.
+      placeholder: "bprks.co.id"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Bukti domain itu resmi
+      description: Link ke situs resminya, atau halaman "hubungi kami" yang mencantumkan domain tersebut.
+    validations:
+      required: true

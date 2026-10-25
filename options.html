@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>CekDulu — Pengaturan</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; background: #101113; color: #e9eaee; padding: 28px 20px;
+    font: 14px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .muted { color: #9aa0aa; font-size: 13px; }
+  section { margin-top: 26px; border-top: 1px solid #24262b; padding-top: 18px; }
+  h2 { font-size: 14px; margin: 0 0 8px; }
+  input[type=url] {
+    width: 100%; box-sizing: border-box; padding: 9px 10px; border-radius: 8px;
+    border: 1px solid #2e3138; background: #0f1012; color: #eceef2; font: inherit;
+  }
+  button {
+    margin-top: 9px; padding: 8px 13px; border-radius: 8px; cursor: pointer;
+    border: 1px solid #2e3138; background: #22252a; color: #e9eaee; font: inherit;
+  }
+  button.primary { background: #2e6bd8; border-color: #2e6bd8; font-weight: 600; }
+  .note { font-size: 12px; color: #9aa0aa; margin-top: 8px; }
+  code { background: #1b1d21; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  #status { margin-left: 10px; font-size: 12px; color: #6cc48a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CekDulu</h1>
+  <div class="muted">Cek link sebelum klik. Ringan, dan secara default tidak mengirim apa pun ke server.</div>
+
+  <section>
+    <h2>Lapisan database (opsional)</h2>
+    <div class="muted">
+      Isi URL proxy milikmu sendiri (Cloudflare Worker di folder <code>worker/</code>).
+      Tanpa ini, CekDulu hanya memakai analisis lokal dan <b>tidak ada URL yang keluar dari perangkatmu</b>.
+    </div>
+    <input id="proxy" type="url" placeholder="https://cekdulu.akun.workers.dev">
+    <div>
+      <button class="primary" id="save">Simpan</button>
+      <button id="clear">Hapus cache</button>
+      <span id="status"></span>
+    </div>
+    <div class="note">
+      Yang dikirim ke proxy hanya hostname yang belum ada di cache. Hasil disimpan 6 jam.
+    </div>
+  </section>
+
+  <section>
+    <h2>Cara kerjanya</h2>
+    <div class="muted">
+      Tiga lapis, dari yang paling murah:
+      <br>1. <b>Lokal (0 ms)</b> — pola URL, typosquatting nama brand Indonesia, karakter mirip, hosting gratis.
+      <br>2. <b>Cache (0 ms)</b> — hasil pencarian sebelumnya untuk domain yang sama.
+      <br>3. <b>Database (&lt;150 ms)</b> — hanya kalau proxy diisi, dan hanya untuk domain yang belum dikenal.
+      <br><br>
+      CekDulu <b>tidak pernah membuka</b> URL yang sedang dicek. Menilai link tidak perlu mengunjunginya.
+    </div>
+  </section>
+</div>
+<script src="options.js"></script>
+</body>
+</html>

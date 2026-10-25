@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Syntax check
+        run: npm run check
+      - name: Behaviour tests
+        run: npm test
+      - name: Manifest is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest ok')"
+      - name: No inline event handlers or eval in shipped files
+        run: |
+          if grep -rnE "eval\(|new Function\(" src popup.js options.js manifest.json; then
+            echo "::error::eval / new Function found in shipped code"
+            exit 1
+          fi
+          echo "clean"
